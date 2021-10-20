@@ -1,4 +1,5 @@
-library(tidyverse)
+
+ibrary(tidyverse)
  brand <- cars_data %>% 
   group_by(brand) %>% 
   nest
@@ -9,7 +10,7 @@ library(tidyverse)
 library(shiny)
 
 ui <- fluidPage(
-  
+  h6("minta")
 )
 
 server <- function(input, output, session) {
