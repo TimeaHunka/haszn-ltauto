@@ -1,5 +1,5 @@
 
-ibrary(tidyverse)
+library(tidyverse)
  brand <- cars_data %>% 
   group_by(brand) %>% 
   nest
