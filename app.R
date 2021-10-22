@@ -1,3 +1,12 @@
+
+library(tidyverse)
+ brand <- cars_data %>% 
+  group_by(brand) %>% 
+  nest
+ 
+ 
+  
+
 library(shiny)
 library(shinydashboard)
 library(tidyverse)
