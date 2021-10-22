@@ -191,3 +191,7 @@ ggplot(df_final)+
   )+
   theme_classic()
 
+# Hipotézis vizsgálat
+# 1) Dízel autók drágábbak-e?
+table(df_final)
+
