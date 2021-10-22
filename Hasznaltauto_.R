@@ -1,5 +1,7 @@
-df2 <- readRDS("hasznaltauto.RDS")
 library(ggcorrplot)
+library(plotly)
+library(tidyverse)
+df2 <- readRDS("hasznaltauto.RDS")
 
 # Különböző autómárkák átlagárai 
 
@@ -19,8 +21,7 @@ márkák_árak <- ggplot(df , aes(brand,vetelar_atlag_mf , fill=brand))+
   theme(legend.position = "none",
         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) 
 
-library(plotly)
-  ggplotly(márkák_árak)
+ggplotly(márkák_árak)
   
   
 #Árult használtautók árai évek szerint
@@ -51,13 +52,6 @@ library(plotly)
   
   
   
-  
-  
-  
-  
-  
-
-  library(tidyverse)
 getwd()
 
 df_brand <- df2 %>% 
@@ -173,4 +167,27 @@ ggplot (audi , aes (x = sebessegvalto_automata , y = vetelar)) +
   stat_summary (fun.data = mean_cl_normal , geom = "errorbar" , color = "red" , width = 0.5) +
   geom_jitter (alpha = 0.7 , shape = '.') +
   coord_cartesian ()
+
+# MARTIN -----------------------------------------------------------------------
+
+# Használtautók gyártási évének eloszlása
+table(df2$evjarat)
+# Mivel 1990 előtt gyártott autók száma viszonylag kevés, így azokat kidobjuk, mivel outliereknek gondoljuk őket az elemzés szempontjából.
+# 1990 előtti autók kiszűrése
+
+df_final <- df2 %>% 
+  filter( evjarat >= 1990)
+
+# A gyártási év eloszlása
+
+ggplot(df_final)+
+  geom_histogram(aes(evjarat),
+                 fill = "red",
+                 binwidth = 1)+
+  labs(
+    main = "Az autók gyártási évének eloszlása",
+    x = "Gyártási év",
+    y = "Darab",
+  )+
+  theme_classic()
 
