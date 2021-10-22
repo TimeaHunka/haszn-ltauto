@@ -169,15 +169,35 @@ ggplot (audi , aes (x = sebessegvalto_automata , y = vetelar)) +
   coord_cartesian ()
 
 # MARTIN -----------------------------------------------------------------------
+options(scipen=999)
 
+# Adattisztítás -----------------------------------------------------------
 # Használtautók gyártási évének eloszlása
-table(df2$evjarat)
+df_raw <- readRDS("hasznaltauto.RDS")
+table(df_raw$evjarat)
 # Mivel 1990 előtt gyártott autók száma viszonylag kevés, így azokat kidobjuk, mivel outliereknek gondoljuk őket az elemzés szempontjából.
-# 1990 előtti autók kiszűrése
 
-df_final <- df2 %>% 
-  filter( evjarat >= 1990)
+# 1990 előtti autók kiszűrése és a vételárak szűrése
 
+df_final <- readRDS("hasznaltauto.RDS") %>% 
+  filter ( evjarat >= 1990) %>% 
+  filter ( vetelar >= 100000 & vetelar <= 25000000)
+
+# Üzemanyagtípusok tisztítása
+df_final$uzemanyag5 <- fct_collapse (df_final$uzemanyag,
+                                     Benzin = c("Benzin" ,"Benzin/Gáz"),
+                                     Dízel = c("Dízel"),
+                                     Hibrid = c("Hibrid", "Hibrid (Benzin)", "Hibrid (Dízel)"), 
+                                     Elektromos = c ("Elektromos"),
+                                     Egyéb = c ("CNG", "Etanol", "LPG")
+)
+
+# Kmóra állások tisztítása a hamis kmállások megjelölésével
+
+df_final$hamis_km <- ifelse(df_final$kilometerora_allasa<=3500 & df_final$evjarat<=2018, 1, 0)
+
+
+# Leíróstatisztika --------------------------------------------------------
 # A gyártási év eloszlása
 
 ggplot(df_final)+
@@ -193,5 +213,19 @@ ggplot(df_final)+
 
 # Hipotézis vizsgálat
 # 1) Dízel autók drágábbak-e?
-table(df_final)
+
+
+# Ábrák hozzá
+
+ggplot(df_final)+
+  geom_histogram(aes(vetelar,
+                     fill = uzemanyag5),
+                 binwidth = 500000)+
+  labs(
+    main = "Az autók árának eloszlása, üzemanyag típusonként",
+    x = "Ár",
+    y = "Arány",
+    fill = "Üzemanyag"
+  )+
+  theme_classic()
 
